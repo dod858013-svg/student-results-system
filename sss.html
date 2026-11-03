@@ -1,0 +1,177 @@
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management System</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            direction: rtl;
+            background: #f2f4f8;
+            padding: 20px;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #243b55;
+        }
+
+        .card {
+            background: white;
+            padding: 15px;
+            margin: 12px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px #ccc;
+        }
+
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+
+        .fail {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>نظام إدارة وتحليل نتائج الطلاب</h1>
+
+<h2>تقارير الطلاب</h2>
+<div id="reports"></div>
+
+<h2>لجنة الرأفة</h2>
+<div id="mercy"></div>
+
+<script>
+
+// 1. Class Student
+class Student {
+
+    constructor(id, name, grades, attendance) {
+        this.id = id;
+        this.name = name;
+        this.grades = grades;
+        this.attendance = attendance;
+    }
+
+    // 2. حساب المتوسط باستخدام reduce
+    calculateAverage() {
+        const total = this.grades.reduce((sum, grade) => sum + grade, 0);
+        return total / this.grades.length;
+    }
+
+    // 3. التقدير
+    getGrade(average) {
+        if (average >= 90) return "A";
+        else if (average >= 80) return "B";
+        else if (average >= 70) return "C";
+        else if (average >= 60) return "D";
+        else if (average >= 50) return "E";
+        else return "F";
+    }
+
+    // 4. النتيجة النهائية
+    getResult(average) {
+        if (average >= 50 && this.attendance >= 75) {
+            return "ناجح";
+        } else {
+            return "يحتاج مراجعة";
+        }
+    }
+}
+
+// 5. مصفوفة الطلاب
+const studentsList = [
+    new Student(1, "Ahmed", [90, 85, 95], 90),
+    new Student(2, "Sara", [45, 48, 42], 80),
+    new Student(3, "Mohamed", [70, 75, 80], 85),
+    new Student(4, "Mona", [40, 45, 48], 70)
+];
+
+// 6. عرض تقارير الطلاب
+const reports = document.getElementById("reports");
+
+studentsList.forEach(student => {
+
+    const average = student.calculateAverage();
+    const grade = student.getGrade(average);
+    const result = student.getResult(average);
+
+    console.log("Student:", student.name);
+    console.log("Average:", average);
+    console.log("Grade:", grade);
+    console.log("Result:", result);
+
+    reports.innerHTML += `
+        <div class="card">
+            <h3>اسم الطالب: ${student.name}</h3>
+            <p>رقم الجلوس: ${student.id}</p>
+            <p>المتوسط: ${average.toFixed(2)}</p>
+            <p>التقدير: ${grade}</p>
+            <p>النتيجة: ${result}</p>
+            <p>الحضور: ${student.attendance}%</p>
+        </div>
+    `;
+});
+
+// 7. استخراج المتعثرين باستخدام filter
+const strugglingStudents = studentsList.filter(student => {
+    const average = student.calculateAverage();
+    return average >= 40 && average <= 49;
+});
+
+// 8. إضافة 5 درجات رأفة باستخدام map
+const mercyStudents = strugglingStudents.map(student => {
+    return {
+        id: student.id,
+        name: student.name,
+        oldAverage: student.calculateAverage(),
+        newAverage: student.calculateAverage() + 5
+    };
+});
+
+// 9. جمع المتوسطات الجديدة باستخدام reduce
+const totalNewAverages = mercyStudents.reduce(
+    (sum, student) => sum + student.newAverage, 0
+);
+
+// 10. الحماية من القسمة على صفر
+const mercyAverage = mercyStudents.length > 0
+    ? totalNewAverages / mercyStudents.length
+    : 0;
+
+// 11. عرض لجنة الرأفة
+const mercy = document.getElementById("mercy");
+
+mercyStudents.forEach(student => {
+    mercy.innerHTML += `
+        <div class="card">
+            <h3>${student.name}</h3>
+            <p>المتوسط القديم: ${student.oldAverage.toFixed(2)}</p>
+            <p>المتوسط بعد الرأفة: ${student.newAverage.toFixed(2)}</p>
+        </div>
+    `;
+});
+
+mercy.innerHTML += `
+    <div class="card">
+        <h3>متوسط الطلاب بعد الرأفة</h3>
+        <p>${mercyAverage.toFixed(2)}</p>
+    </div>
+`;
+
+// 12. طباعة النتائج في Console
+console.log("Mercy Committee:", mercyStudents);
+console.log("Average After Mercy:", mercyAverage);
+
+</script>
+
+</body>
+</html>
