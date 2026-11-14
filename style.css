@@ -1,0 +1,48 @@
+
+body {
+    background-color: #f3f5fa;
+    font-family: Arial, sans-serif;
+    color: #26334a;
+}
+
+h1 {
+    color: #172b4d;
+    font-weight: bold;
+}
+
+.card {
+    border: none;
+    border-radius: 15px;
+}
+
+.form-control {
+    border-radius: 8px;
+    padding: 12px;
+}
+
+.btn {
+    border-radius: 8px;
+    padding: 12px;
+    font-weight: bold;
+}
+
+.btn-primary {
+    background-color: #172b4d;
+    border-color: #172b4d;
+}
+
+.btn-success {
+    background-color: #198754;
+}
+
+#errorBox {
+    font-weight: bold;
+}
+
+#studentsList {
+    line-height: 2;
+}
+
+#reportBox {
+    line-height: 2;
+}
